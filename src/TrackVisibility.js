@@ -113,14 +113,20 @@ export default class TrackVisibility extends Component {
   
   isComponentVisible = () => {
     const html = document.documentElement;
-    const { offset, partialVisibility, once } = this.props;
-    const { top, left, bottom, right, width, height } = this.nodeRef.getBoundingClientRect();
-    const heightCheck = window.innerHeight + offset || html.clientHeight + offset;
-    const widthCheck = window.innerWidth + offset || html.clientWidth + offset;
-    
-    const isVisible = partialVisibility
-      ? top + height >= 0 && left + width >= 0 && bottom - height <= heightCheck && right - width <= widthCheck
-      : top >= 0 && left >= 0 && bottom <= heightCheck && right <= widthCheck;
+    let isVisible;
+    const {offset, partialVisibility, once} = this.props;
+
+    if (!this.nodeRef) {
+      isVisible = false;
+    }else {
+        const {top, left, bottom, right, width, height} = this.nodeRef.getBoundingClientRect();
+        const heightCheck = window.innerHeight + offset || html.clientHeight + offset;
+        const widthCheck = window.innerWidth + offset || html.clientWidth + offset;
+
+        isVisible = partialVisibility
+            ? top + height >= 0 && left + width >= 0 && bottom - height <= heightCheck && right - width <= widthCheck
+            : top >= 0 && left >= 0 && bottom <= heightCheck && right <= widthCheck;
+    }
     
     if (isVisible && once) {
       this.removeListener();
